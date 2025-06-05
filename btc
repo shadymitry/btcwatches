@@ -1,0 +1,199 @@
+import React, { useState } from "react";
+
+const brands = [
+  { name: "Tissot", logo: "https://www.tissotwatches.com/media/logo/default/tissot_logo.png" },
+  { name: "Swatch", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Swatch_logo.png" },
+  { name: "Rado", logo: "https://www.rado.com/media/logo/default/rado_logo.png" },
+  { name: "Hamilton", logo: "https://www.hamiltonwatch.com/media/logo/default/hamilton_logo.png" },
+];
+
+const watches = [
+  {
+    id: 1,
+    brand: "Tissot",
+    name: "Tissot PRX Powermatic 80",
+    image: "https://www.tissotwatches.com/media/catalog/product/T/1/T137.407.11.041.00_R_1.png",
+    price: "22,500 EGP",
+    details: "Automatic · 40mm · Sapphire Glass",
+  },
+  {
+    id: 2,
+    brand: "Tissot",
+    name: "Tissot Seastar 1000",
+    image: "https://www.tissotwatches.com/media/catalog/product/T/1/T120.407.11.041.00_R_1.png",
+    price: "19,900 EGP",
+    details: "Diver · 43mm · Water-resistant 300m",
+  },
+  {
+    id: 3,
+    brand: "Swatch",
+    name: "Swatch Big Bold Jelly",
+    image: "https://www.swatch.com/dw/image/v2/BDKG_PRD/on/demandware.static/-/Sites-swatch-master/default/dw7153ef19/images/hi-res/SO27E100.png",
+    price: "4,300 EGP",
+    details: "Quartz · 47mm · Transparent",
+  },
+  {
+    id: 4,
+    brand: "Rado",
+    name: "Rado Captain Cook",
+    image: "https://www.rado.com/media/catalog/product/r/3/r32128202.png",
+    price: "65,000 EGP",
+    details: "Automatic · 42mm · Ceramic Bezel",
+  },
+  {
+    id: 5,
+    brand: "Hamilton",
+    name: "Hamilton Khaki Field Auto",
+    image: "https://www.hamiltonwatch.com/media/catalog/product/cache/9ab33cfcfc1b06dfbe8d6b8b85b02c09/h/7/h70455553_khaki_field_auto_01.png",
+    price: "18,500 EGP",
+    details: "Automatic · 38mm · 80‑hour Power Reserve",
+  },
+];
+
+export default function BTCWatchesShop() {
+  const [selectedBrand, setSelectedBrand] = useState(brands[0].name);
+  const [wishlist, setWishlist] = useState([]);
+
+  // Filter watches by selected brand
+  const filteredWatches = watches.filter((watch) => watch.brand === selectedBrand);
+
+  const toggleWishlist = (id) => {
+    setWishlist((current) =>
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto py-4 px-6 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <img
+              src="https://www.btcwatches.com/img/logo.png"
+              alt="BTC Watches Logo"
+              className="h-10 w-auto"
+            />
+            <h1 className="text-2xl font-semibold text-gray-800">BTC Watches Egypt</h1>
+          </div>
+          <button className="relative focus:outline-none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+              {wishlist.length}
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar: Brand List */}
+        <aside className="w-64 bg-white border-r overflow-y-auto">
+          <nav className="py-6 px-4 space-y-4">
+            {brands.map((brand) => (
+              <button
+                key={brand.name}
+                onClick={() => setSelectedBrand(brand.name)}
+                className={`flex items-center space-x-3 w-full px-3 py-2 rounded-lg transition-colors text-left hover:bg-gray-100 focus:outline-none ${
+                  selectedBrand === brand.name
+                    ? "bg-blue-100"
+                    : "bg-transparent"
+                }`}
+              >
+                <img
+                  src={brand.logo}
+                  alt={`${brand.name} Logo`}
+                  className="h-8 w-8 object-contain"
+                />
+                <span className="text-gray-700 font-medium">{brand.name}</span>
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main Content: Watches Grid */}
+        <main className="flex-1 p-6 overflow-y-auto">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            {selectedBrand} Watches
+          </h2>
+          {filteredWatches.length === 0 ? (
+            <p className="text-gray-500">No watches available for this brand.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredWatches.map((watch) => (
+                <div
+                  key={watch.id}
+                  className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col"
+                >
+                  <div className="h-48 bg-gray-100 flex items-center justify-center">
+                    <img
+                      src={watch.image}
+                      alt={watch.name}
+                      className="max-h-full object-contain"
+                      onError={(e) => { e.currentTarget.src = "/fallback-image.png"; }}
+                    />
+                  </div>
+                  <div className="p-4 flex flex-col flex-1">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {watch.name}
+                    </h3>
+                    <p className="text-gray-600 mt-1 text-sm flex-1">
+                      {watch.details}
+                    </p>
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-blue-600 font-bold text-lg">
+                        {watch.price}
+                      </span>
+                      <button
+                        onClick={() => toggleWishlist(watch.id)}
+                        className="focus:outline-none"
+                      >
+                        {wishlist.includes(watch.id) ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-red-500"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-gray-400 hover:text-gray-600 transition-colors"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5.121 19.071l7.878-7.879 7.879 7.879m0-14.142l-7.879 7.879-7.878-7.879"
+                            />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
